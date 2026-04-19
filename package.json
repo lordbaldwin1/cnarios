@@ -1,0 +1,20 @@
+{
+  "name": "cnarios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "exec playwright test",
+    "test:ui": "exec playwright test --ui",
+    "codegen": "exec playwright codegen",
+    "test:bp": "exec playwright test ./tests/button-page.spec.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.26.2",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0"
+  }
+}
