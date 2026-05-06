@@ -10,9 +10,16 @@ export class ButtonPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.header = this.page.getByRole("heading", { level: 2, name: "Suggestions for you" });
+    this.header = this.page.getByRole("heading", {
+      level: 2,
+      name: "Suggestions for you",
+    });
     this.enabledCards = this.page.locator(".MuiCard-root").filter({
-      hasNot: this.page.getByRole("heading", { level: 6, name: "Unknown", exact: true })
+      hasNot: this.page.getByRole("heading", {
+        level: 6,
+        name: "Unknown",
+        exact: true,
+      }),
     });
     this.cardList = this.page.locator(".MuiCard-root");
     this.tooltip = this.page.getByRole("tooltip");
@@ -33,7 +40,7 @@ export class ButtonPage {
       clickFollow: async () => await button.click(),
       hoverFollow: async () => await button.hover(),
       clickRemove: async () => await removeButton.click(),
-    }
+    };
   }
 
   getCardByName(name: string) {
@@ -44,7 +51,7 @@ export class ButtonPage {
 
   async getSuggestionNames() {
     const res: string[] = [];
-    for (const card of (await this.cardList.all())) {
+    for (const card of await this.cardList.all()) {
       const title = await card.getByRole("heading").textContent();
       if (!title) {
         throw new Error("Test data error: card missing person name");
