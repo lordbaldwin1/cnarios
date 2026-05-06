@@ -8,7 +8,7 @@
     "test:ui": "exec playwright test --ui",
     "codegen": "exec playwright codegen",
     "test:bp": "exec playwright test ./tests/button-page.spec.ts",
-    "test:fp": "exec playwright test ./tests/form.spec.ts"
+    "test:fp": "exec playwright test ./tests/form-page.spec.ts"
   },
   "keywords": [],
   "author": "",

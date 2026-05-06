@@ -10,6 +10,8 @@ export type FormData = {
   tickets: string;
 };
 
+export type FormField = "name" | "email" | "phone" | "event" | "tickets";
+
 export class FormPage {
   private readonly page: Page;
   readonly nameInput: Locator;
@@ -79,5 +81,14 @@ export class FormPage {
 
   async confirmSubmission() {
     await this.confirmButton.click();
+  }
+
+  async getFieldError(locator: Locator) {
+    const describedBy = await locator.getAttribute("aria-describedby");
+    if (!describedBy) {
+      throw new Error("Expected locator to have aria-describedby");
+    }
+
+    return this.page.locator(`#${describedBy}`);
   }
 }
