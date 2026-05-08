@@ -73,6 +73,7 @@ export class FormPage {
     await this.fillPhone(data.phone);
     await this.selectEvent(data.event);
     await this.fillTickets(data.tickets);
+    await this.ticketInput.blur();
   }
 
   async submitForm() {

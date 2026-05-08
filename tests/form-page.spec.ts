@@ -24,16 +24,6 @@ test.describe("form page tests", () => {
     expect(ticket1).not.toBe(ticket2);
   });
 
-  // Test Steps & Details
-  // Description:
-  // Verify form does not submit when required fields are missing
-
-  // Steps to Execute:
-  // Navigate to the Event Registration form page
-  // Leave one or more fields empty
-  // Try clicking the Register button
-  // Verify Register button is disabled and form cannot be submitted
-
   test("verify submit form disabled with missing required fields", async ({
     formPage,
   }) => {
@@ -76,7 +66,9 @@ test.describe("form page tests", () => {
     );
   });
 
-  test("verify error message is displayed when phone number is less than 7 digits", async ({ formPage }) => {
+  test("verify error message is displayed when phone number is less than 7 digits", async ({
+    formPage,
+  }) => {
     const data: FormData = {
       name: "Alice Smith",
       email: "user@test.com",
@@ -87,6 +79,40 @@ test.describe("form page tests", () => {
     await formPage.goto();
     await formPage.fillForm(data);
     await expect(formPage.submitButton).toBeDisabled();
-    await expect(await formPage.getFieldError(formPage.phoneInput)).toHaveText("Enter a valid phone (7-15 digits)");
+    await expect(await formPage.getFieldError(formPage.phoneInput)).toHaveText(
+      "Enter a valid phone (7-15 digits)",
+    );
+  });
+
+  test("verify error message for tickets less than 1", async ({ formPage }) => {
+    const data: FormData = {
+      name: "Alice Smith",
+      email: "user@test.com",
+      phone: "1234567890",
+      event: "Frontend Conf 2025",
+      tickets: "-1",
+    };
+    await formPage.goto();
+    await formPage.fillForm(data);
+    await expect(formPage.submitButton).toBeDisabled();
+    await expect(await formPage.getFieldError(formPage.ticketInput)).toHaveText(
+      "Enter an integer between 1 and 10",
+    );
+  });
+
+  test("multiple tickets will always have unique ids", async ({ formPage }) => {
+    const data: FormData = {
+      name: "Alice Smith",
+      email: "user@test.com",
+      phone: "1234567890",
+      event: "Frontend Conf 2025",
+      tickets: "5",
+    };
+    await formPage.goto();
+    await formPage.fillForm(data);
+    await formPage.submitForm();
+    await expect(formPage.confirmDialog).toBeVisible();
+    const tickets = new Set(await formPage.ticketIdList.allTextContents());
+    expect(tickets.size).toBe(5);
   });
 });
