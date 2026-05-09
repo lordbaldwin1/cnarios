@@ -4,6 +4,13 @@ export type CategoryCount = {
   [key: string]: number;
 };
 
+type TopProduct = {
+  titles: string[];
+  rating: number;
+};
+
+export type CategoryTopRatings = Record<string, TopProduct | null>;
+
 export class ProductListingPage {
   private readonly page: Page;
   readonly cards: Locator;
@@ -89,5 +96,50 @@ export class ProductListingPage {
       }
     }
     return null;
+  }
+
+  async setupTopCategories() {
+    const ratings: CategoryTopRatings = {};
+    for (const card of await this.headerCounts.all()) {
+      const category = (
+        await card.getByRole("paragraph").nth(0).innerText()
+      ).toUpperCase();
+      ratings[category] = null;
+    }
+    return ratings;
+  }
+
+  async searchPageForTopRatings(ratings: CategoryTopRatings) {
+    for (const card of await this.cards.all()) {
+      const title = await card
+        .getByRole("heading", { level: 6 })
+        .nth(0)
+        .innerText();
+      const category = (await card.getByRole("paragraph").innerText())
+        .split(" ")[1]
+        .toUpperCase();
+      const stars = card.getByRole("img");
+
+      const ratingText = await stars.getAttribute("aria-label");
+      if (!ratingText) {
+        throw new Error("aria-label missing from product rating");
+      }
+      const rating = Number(ratingText.split(" ")[0]);
+
+      if (!ratings[category] || ratings[category].rating < rating) {
+        ratings[category] = { titles: [title], rating };
+      } else if (ratings[category].rating === rating) {
+        const oldTitles = ratings[category].titles;
+        ratings[category] = { titles: [...oldTitles, title], rating }
+      }
+    }
+  }
+
+  async findTopRatedProducts(ratings: CategoryTopRatings) {
+    while (await this.nextButton.isEnabled()) {
+      await this.searchPageForTopRatings(ratings);
+      await this.goNextPage();
+    }
+    await this.searchPageForTopRatings(ratings);
   }
 }
