@@ -2,6 +2,10 @@ import { expect } from "@playwright/test";
 import { test } from "../fixtures";
 
 test.describe("Button Page tests", () => {
+  test.beforeEach(async ({ buttonPage }) => {
+    await buttonPage.goto();
+  });
+  
   test("BTN_001 Click Follow button when enabled", async ({ buttonPage }) => {
     const card = buttonPage.getEnabledCard();
     await expect(buttonPage.header).toContainText("Suggestions");
