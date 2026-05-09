@@ -13,17 +13,22 @@ export type CategoryTopRatings = Record<string, TopProduct | null>;
 
 export class ProductListingPage {
   private readonly page: Page;
-  readonly cards: Locator;
-  readonly nextButton: Locator;
-  readonly headerCounts: Locator;
+  readonly headerCards: Locator;
+  readonly productCards: Locator;
   readonly navigationButtons: Locator;
+  readonly nextButton: Locator;
+  readonly prevButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.cards = this.page.locator(".MuiCardContent-root");
-    this.headerCounts = this.page.locator(".bg-white.border.rounded-lg");
+    this.productCards = this.page.locator(".MuiCardContent-root");
+    this.headerCards = this.page.locator(".bg-white.border.rounded-lg");
     this.nextButton = this.page.getByRole("button", {
       name: "Next",
+      exact: true,
+    });
+    this.prevButton = this.page.getByRole("button", {
+      name: "Prev",
       exact: true,
     });
     this.navigationButtons = this.page
@@ -36,7 +41,7 @@ export class ProductListingPage {
   }
 
   async getCardCategoryCount(count: CategoryCount) {
-    for (const card of await this.cards.all()) {
+    for (const card of await this.productCards.all()) {
       const category = (await card.locator("p").innerText())
         .split(" ")[1]
         .toUpperCase();
@@ -48,6 +53,10 @@ export class ProductListingPage {
     await this.nextButton.click();
   }
 
+  async goPrevPage() {
+    await this.prevButton.click();
+  }
+
   async collectAllCardCategoryCount(count: CategoryCount) {
     while (await this.nextButton.isEnabled()) {
       await this.getCardCategoryCount(count);
@@ -57,7 +66,7 @@ export class ProductListingPage {
   }
 
   async collectCategoryBannerCount(count: CategoryCount) {
-    for (const card of await this.headerCounts.all()) {
+    for (const card of await this.headerCards.all()) {
       const ptags = card.locator("p");
       const category = await ptags.nth(0).innerText();
       const cardCount = await ptags.nth(1).innerText();
@@ -83,7 +92,7 @@ export class ProductListingPage {
   }
 
   async searchCards(productName: string) {
-    for (const card of await this.cards.all()) {
+    for (const card of await this.productCards.all()) {
       const headers = card.getByRole("heading", { level: 6 });
       const title = await headers.nth(0).innerText();
 
@@ -100,7 +109,7 @@ export class ProductListingPage {
 
   async setupTopCategories() {
     const ratings: CategoryTopRatings = {};
-    for (const card of await this.headerCounts.all()) {
+    for (const card of await this.headerCards.all()) {
       const category = (
         await card.getByRole("paragraph").nth(0).innerText()
       ).toUpperCase();
@@ -110,7 +119,7 @@ export class ProductListingPage {
   }
 
   async searchPageForTopRatings(ratings: CategoryTopRatings) {
-    for (const card of await this.cards.all()) {
+    for (const card of await this.productCards.all()) {
       const title = await card
         .getByRole("heading", { level: 6 })
         .nth(0)
@@ -130,7 +139,7 @@ export class ProductListingPage {
         ratings[category] = { titles: [title], rating };
       } else if (ratings[category].rating === rating) {
         const oldTitles = ratings[category].titles;
-        ratings[category] = { titles: [...oldTitles, title], rating }
+        ratings[category] = { titles: [...oldTitles, title], rating };
       }
     }
   }
@@ -141,5 +150,9 @@ export class ProductListingPage {
       await this.goNextPage();
     }
     await this.searchPageForTopRatings(ratings);
+  }
+
+  async goToPage(page: number) {
+    await this.navigationButtons.nth(page).click();
   }
 }

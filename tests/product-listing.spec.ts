@@ -88,4 +88,23 @@ test.describe("ecommerce product listing & pagination tests", () => {
     await productListingPage.findTopRatedProducts(ratings);
     expect(ratings).toEqual(expected);
   });
+
+  test("products change according to page", async ({ productListingPage }) => {
+    await productListingPage.goto();
+    await productListingPage.goToPage(3);
+    await expect(productListingPage.navigationButtons.nth(3)).toHaveAttribute("aria-current", "page");
+    await expect(productListingPage.productCards.nth(0)).toContainText("The North Face Jacket");
+    await productListingPage.goNextPage();
+    await expect(productListingPage.navigationButtons.nth(4)).toHaveAttribute("aria-current", "page");
+    await expect(productListingPage.productCards.nth(0)).toContainText("Spalding NBA Basketball");
+    await productListingPage.goPrevPage();
+    await expect(productListingPage.navigationButtons.nth(3)).toHaveAttribute("aria-current", "page");
+    await expect(productListingPage.productCards.nth(0)).toContainText("The North Face Jacket");
+    await productListingPage.goToPage(1);
+    await expect(productListingPage.navigationButtons.nth(1)).toHaveAttribute("aria-current", "page");
+    await expect(productListingPage.productCards.nth(0)).toContainText("The Pragmatic Programmer");
+    await productListingPage.goToPage(5);
+    await expect(productListingPage.navigationButtons.nth(5)).toHaveAttribute("aria-current", "page");
+    await expect(productListingPage.productCards.nth(0)).toContainText("The Lean Startup");
+  });
 });
