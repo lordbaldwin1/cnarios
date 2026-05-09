@@ -1,6 +1,6 @@
 # cnarios
 
-Playwright end-to-end tests for [cnarios.com](https://www.cnarios.com). The default `baseURL` is set in `playwright.config.ts`.
+Playwright e2e tests for [cnarios.com](https://www.cnarios.com). The default `baseURL` is set in `playwright.config.ts`.
 
 ## Prerequisites
 
