@@ -10,7 +10,8 @@
     "test:bp": "exec playwright test ./tests/button-page.spec.ts",
     "test:fp": "exec playwright test ./tests/form-page.spec.ts",
     "test:pl": "exec playwright test ./tests/product-listing.spec.ts",
-    "test:ec": "exec playwright test ./tests/ecommerce-checkout.spec.ts"
+    "test:ec": "exec playwright test ./tests/ecommerce-checkout.spec.ts",
+    "test:sm": "exec playwright test ./tests/social-media-feed.spec.ts"
   },
   "keywords": [],
   "author": "",

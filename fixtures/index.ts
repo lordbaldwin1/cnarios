@@ -6,6 +6,7 @@ import { ShoppingPage } from "../pages/ecommerce-checkout/ShoppingPage";
 import { HeaderComponent } from "../pages/ecommerce-checkout/HeaderComponent";
 import { AddressPage } from "../pages/ecommerce-checkout/AddressPage";
 import { SuccessPage } from "../pages/ecommerce-checkout/SuccessPage";
+import { SocialMediaPage } from "../pages/SocialMediaPage";
 
 export type Fixtures = {
   buttonPage: ButtonPage;
@@ -15,6 +16,7 @@ export type Fixtures = {
   headerComponent: HeaderComponent;
   addressPage: AddressPage;
   successPage: SuccessPage;
+  socialMediaPage: SocialMediaPage;
 };
 
 export const test = base.extend<Fixtures>({
@@ -45,6 +47,10 @@ export const test = base.extend<Fixtures>({
   successPage: async ({ page }, use) => {
     const successPage = new SuccessPage(page);
     await use(successPage);
+  },
+  socialMediaPage: async ({ page }, use) => {
+    const socialMediaPage = new SocialMediaPage(page);
+    await use(socialMediaPage);
   },
 });
 
