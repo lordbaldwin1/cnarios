@@ -1,4 +1,5 @@
 import { test, expect } from "../fixtures";
+import { AddressFormData } from "../pages/ecommerce-checkout/AddressPage";
 
 test.describe("ecommerce checkout e2e tests", () => {
   // Test Steps & Details
@@ -83,7 +84,7 @@ test.describe("ecommerce checkout e2e tests", () => {
   // Test Steps & Details
   // Description:
   // Complete the full flow with payment success
-  
+
   // Steps to Execute:
   // Add 'Fitness Band' to cart
   // Proceed to cart, then billing
@@ -91,4 +92,33 @@ test.describe("ecommerce checkout e2e tests", () => {
   // Click 'Proceed to Payment'
   // Click 'Pay Now'
   // Verify success message with billing details and total is displayed
+  test("full checkout flow with payment", async ({
+    shoppingPage,
+    headerComponent,
+    successPage,
+  }) => {
+    const addressFormData: AddressFormData = {
+      firstName: "zach",
+      lastName: "tester",
+      address: "122 water ave, Portland, Oregon, 92834",
+    };
+    await shoppingPage.goto();
+    await shoppingPage.addItemToCart("Fitness Band");
+    const addressPage = await (await headerComponent.goToCart()).goToAddress();
+    await addressPage.fillForm(addressFormData);
+    const paymentPage = await addressPage.goToPayment();
+    await paymentPage.pay();
+
+    await headerComponent.isActivePage("Success");
+    await expect(successPage.successHeading).toBeVisible();
+    await expect(successPage.billingFullName).toHaveText("zach tester");
+    await expect(successPage.billingAddress).toHaveText(
+      "122 water ave, Portland, Oregon, 92834",
+    );
+    await expect(successPage.orderSummaryLine).toHaveText(
+      "Fitness Band x 1 = $60",
+    );
+    await expect(successPage.totalPaid).toHaveText("Total Paid: $60");
+    await expect(successPage.backToHomeButton).toBeVisible();
+  });
 });
