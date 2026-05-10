@@ -4,6 +4,7 @@ import { FormPage } from "../pages/FormPage";
 import { ProductListingPage } from "../pages/ProductListingPage";
 import { ShoppingPage } from "../pages/ecommerce-checkout/ShoppingPage";
 import { HeaderComponent } from "../pages/ecommerce-checkout/HeaderComponent";
+import { AddressPage } from "../pages/ecommerce-checkout/AddressPage";
 
 export type Fixtures = {
   buttonPage: ButtonPage;
@@ -11,6 +12,7 @@ export type Fixtures = {
   productListingPage: ProductListingPage;
   shoppingPage: ShoppingPage;
   headerComponent: HeaderComponent;
+  addressPage: AddressPage;
 };
 
 export const test = base.extend<Fixtures>({
@@ -33,7 +35,11 @@ export const test = base.extend<Fixtures>({
   headerComponent: async ({ page }, use) => {
     const headerComponent = new HeaderComponent(page);
     await use(headerComponent);
-  }
+  },
+  addressPage: async ({ page }, use) => {
+    const addressPage = new AddressPage(page);
+    await use(addressPage);
+  },
 });
 
 export { expect } from "@playwright/test";
